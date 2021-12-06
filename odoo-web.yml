@@ -1,0 +1,144 @@
+####### WEB
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: web-pv
+  labels:
+    type: local
+spec:
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 5Gi
+  hostPath:
+    path: /data/web-pv/
+#---
+#apiVersion: v1
+#kind: ConfigMap
+#metadata:
+#  name: odoo-web-data-webconfig
+#  namespace: odoo-app
+#  labels:
+#    app: odoo
+#    module: frontend
+#data:
+#  config.txt: |-
+#    #lin1
+#    #line2
+#    #line3
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-webconfig
+  namespace: odoo-app
+  labels:
+    app: odoo
+    module: frontend
+data:
+  odoo.conf: |-
+    #
+    [options]
+    addons_path = /mnt/enterprise,/mnt/PortnetV14
+    data_dir = /var/lib/odoo
+    admin_passwd = damansoft@2021
+    db_host = 172.104.146.224
+    db_port = 31708
+    #db_name = odoo
+    db_user = odoo
+    db_password = odoo
+    max_cron_threads = 1
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-service
+  namespace: odoo-app
+spec:
+  type: LoadBalancer
+  selector:
+    app: odoo
+    module: frontend
+  ports:
+    - protocol: TCP
+      port: 8069
+      targetPort: 8069
+      #nodePort: 30869 
+      name: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: odoo-web
+  namespace: odoo-app
+  labels:
+    app: odoo
+    module: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: odoo
+      module: frontend
+  template:
+    metadata:
+      labels:
+        app: odoo
+        module: frontend
+    spec:
+      containers:
+      - name: odoo
+        image: odoo:14.0
+        #command: ["/bin/sh"]
+        #args:
+        #- -c
+        #- >-
+         # odoo -i base -d odoo --db_host 172.104.146.224 -r odoo -w odoo --stop-after-init
+        ports:
+        - containerPort: 8069
+        volumeMounts:
+        - name: odoo-web-data
+          mountPath: /var/lib/odoo
+       
+        - name: config
+          mountPath: /etc/odoo
+        - name: enterprise
+          mountPath: /mnt/enterprise
+#          readOnly: true  
+        - name: addons-portnet
+          mountPath: /mnt/PortnetV14
+#          readOnly: true
+      volumes:
+      - name: odoo-web-data
+        persistentVolumeClaim:
+          claimName: odoo-web-data
+        #configMap:
+        #  defaultMode: 0644
+        #  name: odoo-web-data-webconfig
+      - name: config
+        configMap:
+          defaultMode: 0644
+          name: config-webconfig
+      - name: enterprise
+        hostPath:
+          path: /enterprise
+      - name: addons-portnet
+        hostPath:
+          path: /addons/PortnetV14
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: odoo-web-data
+  namespace: odoo-app
+  labels:
+    app: odoo
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
