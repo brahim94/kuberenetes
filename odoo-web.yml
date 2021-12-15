@@ -43,8 +43,8 @@ data:
     addons_path = /mnt/enterprise,/mnt/PortnetV14
     data_dir = /var/lib/odoo
     admin_passwd = damansoft@2021
-    db_host = 172.104.146.224
-    db_port = 31708
+    db_host = 10.50.128.110
+    db_port = 31363
     #db_name = odoo
     db_user = odoo
     db_password = odoo
