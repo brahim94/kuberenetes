@@ -6,8 +6,9 @@ metadata:
   labels:
     type: local
 spec:
+  storageClassName: manual
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   capacity:
     storage: 5Gi
   hostPath:
@@ -95,6 +96,7 @@ spec:
         #args:
         #- -c
         #- >-
+         #chmod 777 /etc/odoo/odoo.conf 
          # odoo -i base -d odoo --db_host 172.104.146.224 -r odoo -w odoo --stop-after-init
         ports:
         - containerPort: 8069
@@ -104,6 +106,7 @@ spec:
        
         - name: config
           mountPath: /etc/odoo
+#          readOnly: false
         - name: enterprise
           mountPath: /mnt/enterprise
 #          readOnly: true  
@@ -119,7 +122,7 @@ spec:
         #  name: odoo-web-data-webconfig
       - name: config
         configMap:
-          defaultMode: 0644
+          defaultMode: 0777
           name: config-webconfig
       - name: enterprise
         hostPath:
@@ -138,7 +141,7 @@ metadata:
     app: odoo
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 5Gi

@@ -1,0 +1,62 @@
+apiVersion: v1
+items:
+- apiVersion: networking.k8s.io/v1
+  kind: Ingress
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"extensions/v1beta1","kind":"Ingress","metadata":{"annotations":{"kubernetes.io/ingress.class":"nginx","nginx.ingress.kubernetes.io/rewrite-target":"/$1","nginx.ingress.kubernetes.io/use-regex":"true"},"name":"ingress-service-odoo","namespace":"default"},"spec":{"rules":[{"host":"karbon-k8sodoodev-1ef955-k8s-worker-0","http":{"paths":[{"backend":{"serviceName":"web-service","servicePort":8069},"path":"/"}]}}]}}
+      kubernetes.io/ingress.class: nginx
+      nginx.ingress.kubernetes.io/rewrite-target: /$1
+      nginx.ingress.kubernetes.io/use-regex: "true"
+    creationTimestamp: "2021-12-14T15:02:40Z"
+    generation: 1
+    managedFields:
+    - apiVersion: extensions/v1beta1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:kubectl.kubernetes.io/last-applied-configuration: {}
+            f:kubernetes.io/ingress.class: {}
+            f:nginx.ingress.kubernetes.io/rewrite-target: {}
+            f:nginx.ingress.kubernetes.io/use-regex: {}
+        f:spec:
+          f:rules: {}
+      manager: kubectl-client-side-apply
+      operation: Update
+      time: "2021-12-14T15:02:40Z"
+    - apiVersion: networking.k8s.io/v1beta1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          f:loadBalancer:
+            f:ingress: {}
+      manager: nginx-ingress-controller
+      operation: Update
+      time: "2021-12-14T19:21:43Z"
+    name: ingress-service-odoo
+    namespace: default
+    resourceVersion: "7321543"
+    uid: 35408246-ca8c-4509-8a13-0170ee959741
+  spec:
+    rules:
+    - host: karbon-k8sodoodev-1ef955-k8s-worker-0
+      http:
+        paths:
+        - backend:
+            service:
+              name: web-service
+              port:
+                number: 8069
+          path: /
+          pathType: ImplementationSpecific
+  status:
+    loadBalancer:
+      ingress:
+      - ip: 10.50.128.110
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""
