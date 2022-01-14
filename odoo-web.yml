@@ -7,12 +7,14 @@ metadata:
     type: local
 spec:
   storageClassName: manual
-  accessModes:
-    - ReadWriteMany
+ # accessModes:
+   # - ReadWriteMany
   capacity:
     storage: 5Gi
+  accessModes:
+    - ReadWriteMany 
   hostPath:
-    path: /data/web-pv/
+    path: "/data/web-pv/"
 #---
 #apiVersion: v1
 #kind: ConfigMap
@@ -78,7 +80,7 @@ metadata:
     app: odoo
     module: frontend
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: odoo
@@ -140,6 +142,7 @@ metadata:
   labels:
     app: odoo
 spec:
+  storageClassName: manual
   accessModes:
     - ReadWriteMany
   resources:
