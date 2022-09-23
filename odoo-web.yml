@@ -1,34 +1,19 @@
 ####### WEB
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: web-pv
-  labels:
-    type: local
-spec:
-  storageClassName: manual
-  accessModes:
-    - ReadWriteMany
-  capacity:
-    storage: 5Gi
-  hostPath:
-    path: /data/web-pv/
-#---
-#apiVersion: v1
-#kind: ConfigMap
-#metadata:
-#  name: odoo-web-data-webconfig
-#  namespace: odoo-app
-#  labels:
-#    app: odoo
-#    module: frontend
-#data:
-#  config.txt: |-
-#    #lin1
-#    #line2
-#    #line3
-
----
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: web-pv
+#   labels:
+#     type: local
+# spec:
+#   storageClassName: manual
+#   capacity:
+#     storage: 5Gi
+#   accessModes:
+#     - ReadWriteMany
+#   hostPath:
+#     path: "/data/web-pv/"
+# ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -41,7 +26,7 @@ data:
   odoo.conf: |-
     #
     [options]
-    addons_path = /mnt/enterprise,/mnt/PortnetV14
+    addons_path = /mnt/enterprise,/mnt/PortnetV14,/mnt/bitbucket
     data_dir = /var/lib/odoo
     admin_passwd = damansoft@2021
     db_host = 10.50.128.110
@@ -66,7 +51,6 @@ spec:
     - protocol: TCP
       port: 8069
       targetPort: 8069
-      #nodePort: 30869 
       name: http
 ---
 apiVersion: apps/v1
@@ -78,7 +62,7 @@ metadata:
     app: odoo
     module: frontend
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: odoo
@@ -96,30 +80,26 @@ spec:
         #args:
         #- -c
         #- >-
-         #chmod 777 /etc/odoo/odoo.conf 
+         #chmod 777 /etc/odoo/odoo.conf
          # odoo -i base -d odoo --db_host 172.104.146.224 -r odoo -w odoo --stop-after-init
         ports:
         - containerPort: 8069
         volumeMounts:
         - name: odoo-web-data
           mountPath: /var/lib/odoo
-       
+
         - name: config
           mountPath: /etc/odoo
-#          readOnly: false
         - name: enterprise
           mountPath: /mnt/enterprise
-#          readOnly: true  
         - name: addons-portnet
           mountPath: /mnt/PortnetV14
-#          readOnly: true
+        - name: bitbucket
+          mounthPath: /mnt/bitbucket
       volumes:
       - name: odoo-web-data
         persistentVolumeClaim:
-          claimName: odoo-web-data
-        #configMap:
-        #  defaultMode: 0644
-        #  name: odoo-web-data-webconfig
+          claimName: nfs-odoo-pvc
       - name: config
         configMap:
           defaultMode: 0777
@@ -130,18 +110,21 @@ spec:
       - name: addons-portnet
         hostPath:
           path: /addons/PortnetV14
-
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: odoo-web-data
-  namespace: odoo-app
-  labels:
-    app: odoo
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 5Gi
+      - name: bitbucket
+        hostpath:
+          path: /home/odoo/dev
+# ---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: odoo-web-data
+#   namespace: odoo-app
+#   labels:
+#     app: odoo
+# spec:
+#   storageClassName: manual
+#   accessModes:
+#     - ReadWriteMany
+#   resources:
+#     requests:
+#       storage: 5Gi
