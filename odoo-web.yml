@@ -110,6 +110,9 @@ spec:
       - name: addons-portnet
         hostPath:
           path: /addons/PortnetV14
+      - name: bitbucket
+        hostPath:
+          path: /home/odoo/dev
       # - name: bitbucket
       #   hostpath:
       #     path: /home/odoo/dev
