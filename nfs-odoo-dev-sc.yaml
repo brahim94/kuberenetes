@@ -1,0 +1,12 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+    name: file-dc2-odoo-storageclass
+    annotations:
+        storageclass.kubernetes.io/is-default-class: "false"
+provisioner: csi.nutanix.com
+parameters:
+    nfsServer: file-server-dc2.portnet.dc
+    nfsPath: file-server-dc2.portnet.dc:/odoo-dev
+    storageType: NutanixFiles
+reclaimPolicy:  Retain
