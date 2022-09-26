@@ -38,10 +38,6 @@ data:
     db_password = odoo
     limit_memory_hard = 2684354560
     limit_memory_soft = 2147483648
-    limit_request = 8192
-    limit_time_cpu = 60000000
-    limit_time_real = 120000000
-    max_cron_threads = 2
 
 ---
 apiVersion: v1
