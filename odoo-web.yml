@@ -95,7 +95,7 @@ spec:
         - name: addons-portnet
           mountPath: /mnt/PortnetV14
         - name: bitbucket
-          mounthPath: /mnt/bitbucket
+          mountPath: /mnt/bitbucket
       volumes:
       - name: odoo-web-data
         persistentVolumeClaim:
