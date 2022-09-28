@@ -121,7 +121,7 @@ spec:
           path: /home/odoo/dev
       - name: msgportnet
         hostPath:
-          path: opt/odoo_portnet_exchange/
+          path: /opt/odoo_portnet_exchange/
       # - name: bitbucket
       #   hostpath:
       #     path: /home/odoo/dev
