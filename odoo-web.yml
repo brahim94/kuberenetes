@@ -100,6 +100,8 @@ spec:
           mountPath: /mnt/PortnetV14
         - name: bitbucket
           mountPath: /mnt/bitbucket
+        - name: msg_portnet
+          mountPath: /opt/odoo_portnet_exchange/
       volumes:
       - name: odoo-web-data
         persistentVolumeClaim:
@@ -117,6 +119,9 @@ spec:
       - name: bitbucket
         hostPath:
           path: /home/odoo/dev
+      - name: msg_portnet
+        hostPath:
+          path: opt/odoo_portnet_exchange/
       # - name: bitbucket
       #   hostpath:
       #     path: /home/odoo/dev
